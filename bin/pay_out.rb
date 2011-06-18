@@ -1,4 +1,5 @@
 require_relative "../model/payout"
+require 'pp'
 
 
 def validate_address(address)
@@ -46,6 +47,7 @@ def pay(nmc, payout = 49.0)
     exit
   end
   paid = 0
+  paid_potential = 0
   puts "Paying out #{payout} nmc"
   #bonus logic
 =begin
@@ -56,16 +58,12 @@ def pay(nmc, payout = 49.0)
     NMC::Payout.create(:username => account, :amount => amount, :found_block => nmc[:id])
   end
 =end
-  work.each do |worker|
+  payouts = work.map do |worker|
     percentage = worker[:good]/total_shares.to_f
     user, payment = worker[:username], payout*percentage
-    if pay_nmc user, payment
-      paid += payment
-      puts "PAID #{user} #{payment}"
-      NMC::Payout.create(:username => user, :amount => payment, :found_block => nmc[:id], :percentage => percentage)
-    end
-    if paid > (payout + 0.1)
-      print "You've already paid out #{paid}, sure you want to continue? "
+    paid_potential  += payment
+    if paid_potential > (payout + 0.1)
+      print "You've already calculated to pay out #{paid}, sure you want to continue? "
       ans  = $stdin.gets.chomp
       if ans =~ /^y/i
         puts "Your call, Santa"
@@ -73,6 +71,27 @@ def pay(nmc, payout = 49.0)
         puts "Good choice, see what's up"
         exit
       end
+    end
+    [user, payment, percentage]
+  end
+  # ask questions
+  pp payouts
+
+  print "Does this look kosher? "
+  ans  = $stdin.gets.chomp
+  if ans =~ /^y/i
+    puts "Already, here go the payments!"
+  else
+    puts "Alright, giving up, fix your shit, users are waiting!"
+    exit
+  end
+
+  payouts.each do |payment|
+    user, amount, percentage = payment
+    if pay_nmc user, amount
+      paid += amount
+      puts "PAID #{user} #{amount}"
+      NMC::Payout.create(:username => user, :amount => amount, :found_block => nmc[:id], :percentage => percentage)
     end
   end
   nmc.update(:paid => true, :pay_stop_stamp => Time.now)
