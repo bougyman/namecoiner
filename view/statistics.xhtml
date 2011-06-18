@@ -1,0 +1,22 @@
+<table class="inuit">
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Amount</th>
+      <th>Confirmations</th>
+      <th>TxID</th>
+      <th>Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?r @stats.each do |stat| ?>
+      <tr>
+        <td>#{h stat['category']}</td>
+        <td>#{h stat['amount']}</td>
+        <td>#{h stat['confirmations']}</td>
+        <td><a href="http://explorer.dot-bit.org?q=#{h stat['txid']}">#{h stat['txid'][0..10]}...</a></td>
+        <td>#{h Time.at(stat['time']).utc}</td>
+      </tr>
+    <?r end ?>
+  </tbody>
+</table>

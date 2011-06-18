@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>NameBit</title>
+    <link rel="stylesheet" href="/css/inuit.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/centred-nav.inuit.css">
+    <link href='http://fonts.googleapis.com/css?family=VT323' rel='stylesheet'>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet'>
+    <script src="/js/flot/jquery.min.js"></script>
+    <script src="/js/flot/jquery.flot.min.js"></script>
+    <script src="/js/main_index.js"></script>
+    <script src="/js/graphs.js"></script>
+  </head>
+  <body>
+    <header class="grids">
+      <a href="/"><h1 class="grid grid-4">NameBit</h1></a>
+      <div class="grid grid-2">
+        <img src="/img/goldfish.png">
+      </div>
+      <div class="grid grid-16">
+        <nav class="centered">
+          <ul>
+            <li>#{Namecoiner::Main.a 'Home', :/}</li>
+            <li>#{Namecoiner::Main.a 'Get Started', :intro}</li>
+            <li>#{Namecoiner::Main.a 'My Account', :my_account}</li>
+            <li>#{Namecoiner::Main.a 'Statistics', :statistics}</li>
+            <li>#{Namecoiner::Graph.a 'Graphs', :/}</li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div id="content" class="grids">
+      #{@content}
+    </div>
+
+    <footer class="grids">
+      <div id="copyright" class="grid grid-16">&copy; 2011 by <a href="http://rubyists.bit">The Rubyists, LLC.</a></div>
+      <div id="contact_us" class="grid grid-16">Find us at #namebit on <a href="http://freenode.net" title="Freenode IRC">Freenode</a> or email support at rubyists dot com</div>
+    </footer>
+  </body>
+</html>

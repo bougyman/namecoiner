@@ -1,0 +1,134 @@
+/*------------------------------------*\
+	MAIN
+\*------------------------------------*/
+html{
+	font-family:"Droid Sans", sans-serif;
+	color:#8ad1d8;
+  background: #0e2028;
+}
+body{
+	background:none;
+	padding-top:50px;
+	text-shadow:0 -1px 0 rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.25);
+}
+#page{
+	margin:0 auto;
+	float:none;
+	text-align:center;
+}
+
+header {
+  margin-bottom: 2em;
+}
+
+footer {
+  text-align: center;
+}
+
+.stats table {
+  background: #16242a;
+  border: 1px solid #162830;
+  text-align: center;
+}
+
+.stats table td, .stats table th {
+  border: 0px;
+}
+
+.miner {
+}
+
+#details tr.solution {
+  background: #008209;
+}
+
+nav a {
+  color: #fff;
+  border: 1px solid #333;
+  padding: 0.5em 1em;
+}
+
+
+/*------------------------------------*\
+	TYPE
+\*------------------------------------*/
+h1{
+  color: #34cfbe;
+	font-size:3em;
+  font-weight: 100;
+	font-family:"VT323", "Helvetica Neue", Arial, sans-serif;
+	line-height:1;
+}
+#content a {
+	color:#8ac186;
+  text-decoration: underline;
+}
+
+code {
+  display: block;
+  font-size: 0.9em;
+  padding: 1em;
+  font-family: "Droid Sans Mono", monospace;
+}
+
+/* centered nav */
+nav.centred,
+nav.centered{
+	text-align:center;
+}
+nav.centred li,
+nav.centered li{
+	display:inline;
+	float:none;
+}
+nav.centred a,
+nav.centered a{
+	display:inline-block;
+}
+
+
+/* IMAGES */
+#logo{
+	margin-bottom:1.5em;
+}
+
+
+
+
+
+/*------------------------------------*\
+	NARROW
+\*------------------------------------*/
+/*
+CSS for tablets and narrower devices
+*/
+
+
+
+
+
+@media (min-width: 721px) and (max-width: 960px){}
+/*--- END NARROW ---*/
+
+
+
+
+
+/*------------------------------------*\
+	MOBILE
+\*------------------------------------*/
+/*
+CSS for mobile devices.
+Linearise it!
+*/
+
+
+
+
+
+@media (max-width: 720px){
+body{
+	font-size:0.75em;
+}
+}
+/*--- END MOBILE ---*/

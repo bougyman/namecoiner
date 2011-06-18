@@ -1,0 +1,45 @@
+<div id="details" class="grid grid-16">
+  <h2>Shares from #{h @username}</h2>
+
+  <h3>Current Round</h3>
+  <table class="inuit">
+    <thead>
+      <tr>
+        <th>Time started</th>
+        <th>Shares</th>
+        <th>Stales</th>
+        <th>Reward</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>#{h @current_start_time.utc}</td>
+        <td>#{h @current_user_good}</td>
+        <td>#{h @current_user_bad}</td>
+        <td>#{h "%.8f" % @current_user_pay}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Past Performance</h3>
+  <table class="inuit">
+    <thead>
+      <tr>
+        <th>Time started</th>
+        <th>Shares</th>
+        <th>Stales</th>
+        <th>Reward</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?r @past_rounds.each do |round| ?>
+        <tr>
+          <td>#{h round[:time].utc}</td>
+          <td>#{h round[:good]}</td>
+          <td>#{h round[:bad]}</td>
+          <td>#{h "%.8f" % round[:pay]}</td>
+        </tr>
+      <?r end ?>
+    </tbody>
+  </table>
+</div>

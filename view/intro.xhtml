@@ -1,0 +1,54 @@
+<div class="section grid grid-8">
+  <h2>Get mining tools and start digging</h2>
+  <p>
+    To join this pool, all you need is a namecoin address where we can
+    send you your reward. You use this address instead of a username for
+    your miner, the password has to be "none" (without quotation marks).
+  </p>
+  <p>
+    A way to get a new address to use is with
+    <code>namecoind getaccountaddress ""</code>
+    More details can be found at <a href="https://en.bitcoin.it/wiki/Accounts_explained">the bitcoin wiki</a>
+  </p>
+  <p>
+    The pool runs at <a href="http://namebit.org">pool.namebit.org:9098</a>
+  </p>
+</div>
+<div class="section grid grid-8">
+  <h2>Rates</h2>
+  <p>
+    To cover the ongoing costs for this service, the pool keeps 1 coin of the reward
+    per generated block.
+  </p>
+  <p>
+    Payout is manual at the moment, so it might take a few hours after finding
+    a block before you receive your share.
+  </p>
+  <p>
+    Your reward is based on the number of shares your miner submitted to the
+    pool.<br>
+    We sum your stale and full shares since the last time we found a block, and distribute the 49 NMC proportional to that among all participants.
+  </p>
+</div>
+<div class="section grid grid-16">
+  <h2>Miner setup</h2>
+  <p class="miner">
+    <a href="https://en.bitcoin.it/wiki/Poclbm">PyOpenCL bitcoin miner with a GUI frontend</a>
+    <code>poclbm.py --user addr --pass none --host pool.namebit.org --port 9098</code>
+  </p>
+
+  <p class="miner">
+    <a href="https://en.bitcoin.it/wiki/OpenCL_miner">OpenCL/CUDA GPU miner</a>
+    <code>rpcminer-opencl.exe -url=http://pool.namebit.org:9098 -user=addr -password=none</code>
+  </p>
+
+  <p class="miner">
+    <a href="https://en.bitcoin.it/wiki/Phoenix_miner">Phoenix Miner</a>
+    <code>phoenix.exe -u http://addr:none@pool.namebit.org:9098/ -k poclbm VECTORS BFI_INT AGGRESSION=10 WORKSIZE=128 DEVICE=0 FASTLOOP=false</code>
+  </p>
+
+  <p class="miner">
+    <a href="https://en.bitcoin.it/wiki/Cpu_Miner">CPU Miner</a>
+    <code>minerd --userpass addr:none --url http://pool.namebit.org:9098</code>
+  </p>
+</div>

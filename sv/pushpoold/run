@@ -1,0 +1,3 @@
+#!/bin/sh
+cd ~
+exec ./sbin/pushpoold 2>&1

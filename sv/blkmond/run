@@ -1,0 +1,3 @@
+#!/bin/sh
+cd ~/g/pushpool
+exec ./blkmond ~/blkmon.cfg 2>&1
