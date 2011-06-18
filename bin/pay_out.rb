@@ -35,9 +35,9 @@ end
 
 def pay(nmc, payout = 49.0)
   work = NMC::Shares.won_shares_for(nmc)
-  puts "#{work.count} users on this block"
+  puts "#{work.count} users on this round"
   total_shares = work.inject(0) { |a,b| a + b[:good] }
-  puts "#{total_shares} total shares, for #{50.0/total_shares} nmc per block"
+  puts "#{total_shares} total shares, for #{50.0/total_shares} nmc per share per block"
   puts "Winner is #{nmc.username}, good job"
   print "About to pay out, everything look good?? "
   answer = $stdin.gets.chomp
@@ -45,19 +45,25 @@ def pay(nmc, payout = 49.0)
     puts "Ok, stopping"
     exit
   end
+  paid = 0
+  puts "Paying out #{payout} nmc"
   #bonus logic
 =begin
   if pay_nmc nmc.username, 5
     paid += 5
-    print "PAID #{nmc.username} 5"
+    payout -= 5
+    print "BONUS PAID #{nmc.username} 5"
     NMC::Payout.create(:username => account, :amount => amount, :found_block => nmc[:id])
   end
 =end
-  puts "Paying out #{payout} nmc"
-  paid = 0
   work.each do |worker|
     percentage = worker[:good]/total_shares.to_f
     user, payment = worker[:username], payout*percentage
+    if pay_nmc user, payment
+      paid += payment
+      puts "PAID #{user} #{payment}"
+      NMC::Payout.create(:username => user, :amount => payment, :found_block => nmc[:id], :percentage => percentage)
+    end
     if paid > (payout + 0.1)
       print "You've already paid out #{paid}, sure you want to continue? "
       ans  = $stdin.gets.chomp
@@ -67,11 +73,6 @@ def pay(nmc, payout = 49.0)
         puts "Good choice, see what's up"
         exit
       end
-    end
-    if pay_nmc user, payment
-      paid += payment
-      puts "PAID #{user} #{payment}"
-      NMC::Payout.create(:username => user, :amount => payment, :found_block => nmc[:id], :percentage => percentage)
     end
   end
   nmc.update(:paid => true, :pay_stop_stamp => Time.now)

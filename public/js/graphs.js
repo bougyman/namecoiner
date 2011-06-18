@@ -91,7 +91,7 @@
       },
       xaxis: {
         mode: "time",
-        ticksize: [1, "hour"]
+        ticksize: [1, "day"]
       },
       yaxis: {
         minTicksize: 1
@@ -111,7 +111,7 @@
       return $.plot(graph, data, options);
     };
     return $.ajax({
-      url: "/graph/last_24h.json?label=Found&u=true&o=true",
+      url: "/graph/last_7d.json?label=Found&u=true&o=true",
       method: 'GET',
       dataType: 'json',
       success: onDataReceived

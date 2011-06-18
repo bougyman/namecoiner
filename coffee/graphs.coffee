@@ -64,7 +64,7 @@ graphFound = ->
   options = {
     lines: { show: true },
     points: { show: true },
-    xaxis: { mode: "time", ticksize: [1, "hour"] },
+    xaxis: { mode: "time", ticksize: [1, "day"] },
     yaxis: { minTicksize: 1 },
   }
   data = []
@@ -89,7 +89,7 @@ graphFound = ->
     # and plot all we got
     $.plot(graph, data, options)
 
-  $.ajax({url: "/graph/last_24h.json?label=Found&u=true&o=true", method: 'GET', dataType: 'json', success: onDataReceived})
+  $.ajax({url: "/graph/last_7d.json?label=Found&u=true&o=true", method: 'GET', dataType: 'json', success: onDataReceived})
 
 $ ->
   graphShares24h()

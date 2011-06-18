@@ -35,6 +35,14 @@ footer {
   border: 0px;
 }
 
+#graphs h2 {
+}
+
+#graphs .graph {
+  height: 16em;
+  margin-bottom: 4em;
+}
+
 .miner {
 }
 
