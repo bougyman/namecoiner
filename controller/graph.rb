@@ -8,28 +8,16 @@ module Namecoiner
     def index
     end
 
-    def last_24h
-      filter = {}
-      filter[:upstream_result] = to_bool(request[:u]) if request[:u]
-      filter[:our_result] = to_bool(request[:o]) if request[:o]
-      filter[:reason] = request[:r] if request[:r]
+    def last_7d
+      json_out(Shares.last_7d)
+    end
 
-      last_24h_json(
-        request[:label],
-        Shares.last_24h.filter(filter)
-      )
+    def last_24h
+      json_out(Shares.last_24h)
     end
 
     def last_60m
-      filter = {}
-      filter[:upstream_result] = to_bool(request[:u]) if request[:u]
-      filter[:our_result] = to_bool(request[:o]) if request[:o]
-      filter[:reason] = request[:r] if request[:r]
-
-      last_60m_json(
-        request[:label],
-        Shares.last_60m.filter(filter)
-      )
+      json_out(Shares.last_60m)
     end
 
     private
@@ -41,16 +29,14 @@ module Namecoiner
       end
     end
 
-    def last_24h_json(label, dataset)
-      { label: label,
-        data: dataset.map{|slice|
-          [slice[:date_trunc].utc.to_i * 1000, slice[:count]]
-      }}
-    end
+    def json_out(dataset, label = request[:label])
+      filter = {}
+      filter[:upstream_result] = to_bool(request[:u]) if request[:u]
+      filter[:our_result] = to_bool(request[:o]) if request[:o]
+      filter[:reason] = request[:r] if request[:r]
 
-    def last_60m_json(label, dataset)
       { label: label,
-        data: dataset.map{|slice|
+        data: dataset.filter(filter).map{|slice|
           [slice[:date_trunc].utc.to_i * 1000, slice[:count]]
       }}
     end

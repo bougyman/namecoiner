@@ -1,4 +1,5 @@
 require_relative "../lib/namecoiner"
+require_relative "../lib/namecoiner/block_header"
 require 'sequel'
 require 'json'
 
@@ -31,6 +32,12 @@ module Namecoiner
       filter(username: username).order(:created_at.desc)
     end
 
+    def self.last_7d
+      filter{ created_at > (Time.now - 7 * 24 * 60 * 60) }.
+        group_and_count("date_trunc('hour', created_at)".lit).
+        order(:date_trunc)
+    end
+
     def self.last_24h
       filter{ created_at > (Time.now - 24 * 60 * 60) }.
         group_and_count("date_trunc('hour', created_at)".lit).
@@ -61,12 +68,12 @@ module Namecoiner
       won_shares.filter(:paid => false)
     end
 
-    def self.last_won_share
-      won_shares.order(:created_at.asc).last
-    end
-
-    def self.last_block(share)
+    def self.last_won_share(share=nil)
+      if share
        won_shares.filter(["created_at < ?",share[:created_at]]).order(:created_at.desc).limit(1).first
+      else
+        won_shares.order(:created_at.asc).last
+      end
     end
 
     def self.user_shares(winning_share, username)
@@ -77,7 +84,7 @@ module Namecoiner
 
     def self.won_shares_for(id)
       this_block = DB[:shares].find(id).first
-      last = last_block(this_block)
+      last = last_won_share(this_block)
       DB["select distinct username,
            sum(case when reason is null then 0 else 1 end) as bad,
            sum(case when reason is null then 1 else 0 end) as good
@@ -85,6 +92,10 @@ module Namecoiner
          where created_at BETWEEN ? AND ?
          group by username
          order by good desc", last[:created_at], this_block[:created_at] ]
+    end
+
+    def self.total_shares_for_block(id)
+      won_shares_for(id).inject(0) { |a,b| a + b[:good] }
     end
 
     def self.last_block_time
@@ -113,6 +124,10 @@ module Namecoiner
            and username = ?
          group by username
          order by username", last_block_time, username]
+    end
+
+    def to_block_header
+      BlockHeader.new(solution[2..-1])
     end
   end
 end

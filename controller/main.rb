@@ -19,7 +19,7 @@ module Namecoiner
       session[:username] = @username
 
       details_current(@username)
-      details_past(@username)
+      @history = Payout.filter(username: @username).order(:paid_at.desc)
     end
 
     def statistics
@@ -52,54 +52,17 @@ module Namecoiner
       if @current_user_shares
         @current_user_good = @current_user_shares.fetch(:good, 0).to_i
         @current_user_bad = @current_user_shares.fetch(:bad, 0).to_i
-        user_shares = @current_user_good + @current_user_bad
 
         @current_shares = Shares.current_shares
         all_shares = @current_shares.inject 0 do |s,v|
-          s + v[:bad].to_i + v[:good].to_i
+          s + v[:good].to_i
         end
         @current_user_pay =
-          Rational(44, all_shares) * user_shares
+          Rational(49, all_shares) * @current_user_good
       else
         @current_user_good = 0
         @current_user_bad = 0
         @current_user_pay = 0
-      end
-    end
-
-    def details_past(username)
-      # | Time Finished | Shares | Stales | Payout |
-      #
-      @past_rounds = Shares.won_shares.
-        order(:created_at.desc).
-        each_cons(2).
-        map do |to_share, from_share|
-
-        all_shares = Shares.
-          filter(["created_at > ?", from_share.created_at]).
-          filter(["created_at < ?", to_share.created_at]).count
-
-        user_bad_shares = Shares.
-          filter(["created_at > ?", from_share.created_at]).
-          filter(["created_at < ?", to_share.created_at]).
-          filter(username: username).
-          filter(reason: 'stale').count
-
-        user_good_shares = Shares.
-          filter(["created_at > ?", from_share.created_at]).
-          filter(["created_at < ?", to_share.created_at]).
-          filter(username: username).
-          filter(reason: nil).count
-
-        pay = Rational(44, all_shares) * (user_bad_shares + user_good_shares)
-        pay += 5 if to_share.username == username
-
-        {
-          time: from_share.created_at,
-          good: user_good_shares,
-          bad: user_bad_shares,
-          pay: pay,
-        }
       end
     end
 

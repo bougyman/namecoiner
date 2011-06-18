@@ -21,23 +21,25 @@
     </tbody>
   </table>
 
-  <h3>Past Performance</h3>
+  <h3>Past Payments</h3>
   <table class="inuit">
     <thead>
       <tr>
-        <th>Time started</th>
+        <th>Paid Date</th>
+        <th>Percentage of total shares</th>
         <th>Shares</th>
         <th>Stales</th>
-        <th>Reward</th>
+        <th>Amount</th>
       </tr>
     </thead>
     <tbody>
-      <?r @past_rounds.each do |round| ?>
+      <?r @history.each do |payment| ?>
         <tr>
-          <td>#{h round[:time].utc}</td>
-          <td>#{h round[:good]}</td>
-          <td>#{h round[:bad]}</td>
-          <td>#{h "%.8f" % round[:pay]}</td>
+          <td>#{h payment.paid_at.utc}</td>
+          <td>#{h "%.8f%%" % payment.percentage.to_f}</td>
+          <td>#{h payment.shares_of(@username).filter(reason: nil).count}</td>
+          <td>#{h payment.shares_of(@username).filter(reason: 'stale').count}</td>
+          <td>#{h "%.8f" % payment.amount.to_f}</td>
         </tr>
       <?r end ?>
     </tbody>
