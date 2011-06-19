@@ -83,15 +83,21 @@ module Namecoiner
     end
 
     def self.won_shares_for(id)
-      this_block = DB[:shares].find(id).first
-      last = last_won_share(this_block)
-      DB["select distinct username,
-           sum(case when reason is null then 0 else 1 end) as bad,
-           sum(case when reason is null then 1 else 0 end) as good
-         from shares 
-         where created_at BETWEEN ? AND ?
-         group by username
-         order by good desc", last[:created_at], this_block[:created_at] ]
+      if this_block = DB[:shares].filter(:id => id).first
+        if last = last_won_share(this_block)
+          DB["select distinct username,
+             sum(case when reason is null then 0 else 1 end) as bad,
+             sum(case when reason is null then 1 else 0 end) as good
+           from shares 
+           where created_at BETWEEN ? AND ?
+           group by username
+           order by good desc", last[:created_at], this_block[:created_at] ]
+        else
+          raise "No last block for #{this_block}!"
+        end
+      else
+        raise "Cannot find share with id of #{id}!"
+      end
     end
 
     def self.total_shares_for_block(id)

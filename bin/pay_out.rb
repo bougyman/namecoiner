@@ -35,14 +35,14 @@ def pay_nmc(account, amount)
 end
 
 def pay(nmc, payout = 49.0)
-  work = NMC::Shares.won_shares_for(nmc)
+  work = NMC::Shares.won_shares_for(nmc[:id])
   puts "#{work.count} users on this round"
   total_shares = work.inject(0) { |a,b| a + b[:good] }
   puts "#{total_shares} total shares, for #{50.0/total_shares} nmc per share per block"
   puts "Winner is #{nmc.username}, good job"
   print "About to pay out, everything look good?? "
   answer = $stdin.gets.chomp
-  if answer.match /^[Yy]/
+  unless answer.match /^[Yy]/
     puts "Ok, stopping"
     exit
   end
@@ -99,7 +99,7 @@ def pay(nmc, payout = 49.0)
 end
 
 if $0 == __FILE__
-  unpaids = NMC::Shares.unpaid_winning_shares
+  unpaids = NMC::Shares.unpaid_winning_shares.order(:created_at.asc)
 
   print "There appear to be #{unpaids.count} unpaid blocks, this seem right? "
 
@@ -113,6 +113,7 @@ if $0 == __FILE__
     exit
   end
   unpaids.each do |nmc|
+    puts "Paying for block on share ##{nmc}"
     nmc.update(:pay_start_stamp => Time.now)
     pay nmc
   end
