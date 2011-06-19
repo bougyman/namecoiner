@@ -6,5 +6,6 @@ $ ->
     $('#blocks_found').text(data.blocks_found)
     $('#blocks_total').text(data.blocks_total)
     $('#difficulty').text(data.difficulty)
-    setTimeout(poll, 10000)
+    $('#current_share_count').text(data.current_share_count)
+    setTimeout(poll, 15000)
   poll()
