@@ -59,7 +59,7 @@ def pay(nmc, payout = 49.0)
   end
 =end
   payouts = work.map do |worker|
-    percentage = worker[:good]/total_shares.to_f
+    percentage = (Rational(100, total_shares.to_i) * worker[:good]).to_f
     user, payment = worker[:username], payout*percentage
     paid_potential  += payment
     if paid_potential > (payout + 0.1)

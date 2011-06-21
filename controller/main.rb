@@ -33,7 +33,10 @@ module Namecoiner
     def live_data
       hashrate = Shares.hash_per_second
       blocks_found = Shares.blocks_found
-      current_share_count = NMC::Shares.current_shares.inject(0) { |total,share| share[:good] + total }
+      current_shares = NMC::Shares.current_shares
+      current_share_count = current_shares.inject(0) { |total,share| share[:good] + total }
+      current_user_count = current_shares.count
+      hashes_per_user = hashrate/current_user_count.to_f
       blocks_total = `~/bin/namecoind getblockcount`.to_i
       difficulty = `~/bin/namecoind getdifficulty`.to_f
 
@@ -41,7 +44,9 @@ module Namecoiner
         blocks_found: blocks_found,
         blocks_total: blocks_total,
         difficulty: "%.2f" % difficulty,
-        current_share_count: current_share_count
+        current_share_count: current_share_count,
+        current_user_count: current_user_count,
+        hashes_per_user: hashrate_format(hashes_per_user),
       }
     end
 

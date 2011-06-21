@@ -39,13 +39,19 @@ module Namecoiner
     end
 
     def self.last_24h
-      filter{ created_at > (Time.now - 24 * 60 * 60) }.
+      _, _, h, d, m, y = Time.now.utc.to_a
+      to = Time.utc(y, m, d, h)
+
+      filter{ (created_at > (to - 24 * 60 * 60)) & (created_at < to) }.
         group_and_count("date_trunc('hour', created_at)".lit).
         order(:date_trunc)
     end
 
     def self.last_60m
-      filter{ created_at > (Time.now - 60 * 60) }.
+      _, m, h, d, mo, y = Time.now.utc.to_a
+      to = Time.utc(y, mo, d, h, m)
+
+      filter{ (created_at > (to - 60 * 60)) & (created_at < to) }.
         group_and_count("date_trunc('minute', created_at)".lit).
         order(:date_trunc)
     end
@@ -134,6 +140,21 @@ module Namecoiner
 
     def to_block_header
       BlockHeader.new(solution[2..-1])
+    end
+
+    def to_json(*args)
+      header = to_block_header
+      {
+        version: header.version,
+        hash: header.block_hash,
+        previous_block: header.previous_block,
+        merkle_root: header.merkle_root,
+        timestamp: header.timestamp,
+        bits: header.bits,
+        nonce: header.nonce,
+        created_at: created_at.to_i,
+        shares: self.class.total_shares_for_block(id),
+      }.to_json(*args)
     end
   end
 end

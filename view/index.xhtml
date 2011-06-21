@@ -7,6 +7,7 @@
         <th>Block</th>
         <th>Found</th>
         <th>Shares Since Last Block</th>
+        <th>Current Users</th>
       </tr>
     </thead>
     <tbody>
@@ -16,6 +17,7 @@
         <td id="blocks_total">#{h @blocks_total}</td>
         <td id="blocks_found">#{h @blocks_found}</td>
         <td id="current_share_count">#{h @current_share_count}</td>
+        <td id="current_user_count">#{h @current_user_count} #{h @hashes_per_user}</td>
       </tr>
     </tbody>
   </table>

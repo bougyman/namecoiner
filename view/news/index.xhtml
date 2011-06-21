@@ -1,0 +1,8 @@
+<h2>News</h2>
+<?r @articles.each do |article| ?>
+  <article>
+    <div class="time">#{h article.created_at.utc}</div>
+    <div class="title">#{a title, :show, article.id}</div>
+    <div class="excerpt">#{h article.excerpt}</div>
+  </article>
+<?r end ?>

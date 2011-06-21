@@ -5,5 +5,8 @@ require 'sequel'
 
 require_relative 'model/shares'
 require_relative 'model/payout'
+require_relative 'model/news'
 require_relative 'controller/main'
 require_relative 'controller/graph'
+require_relative 'controller/api'
+require_relative 'controller/news'
