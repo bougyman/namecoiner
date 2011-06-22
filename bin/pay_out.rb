@@ -37,34 +37,37 @@ end
 def pay(nmc, payout = 49.0)
   work = NMC::Shares.won_shares_for(nmc[:id])
   puts "#{work.count} users on this round"
+
   total_shares = work.inject(0) { |a,b| a + b[:good] }
-  puts "#{total_shares} total shares, for #{50.0/total_shares} nmc per share per block"
+  puts "#{total_shares} total shares, for #{payout/total_shares} nmc per share per block"
   puts "Winner is #{nmc.username}, good job"
+
   print "About to pay out, everything look good?? "
-  answer = $stdin.gets.chomp
-  unless answer.match /^[Yy]/
+  answer = $stdin.gets
+  unless answer =~ /^y/i
     puts "Ok, stopping"
     exit
   end
+
   paid = 0
   paid_potential = 0
+  paid_potential_max = payout + 0.1
+
   puts "Paying out #{payout} nmc"
-  #bonus logic
-=begin
-  if pay_nmc nmc.username, 5
-    paid += 5
-    payout -= 5
-    print "BONUS PAID #{nmc.username} 5"
-    NMC::Payout.create(:username => account, :amount => amount, :found_block => nmc[:id])
-  end
-=end
+
   payouts = work.map do |worker|
-    percentage = (Rational(100, total_shares.to_i) * worker[:good]).to_f
-    user, payment = worker[:username], payout*percentage
-    paid_potential  += payment
-    if paid_potential > (payout + 0.1)
+    user = worker[:username]
+    worker_shares = worker[:good].to_i
+    percentage = Rational(100, total_shares) * worker_shares
+    payment = payout * Rational(worker_shares, total_shares)
+
+    paid_potential += payment
+
+    if paid_potential > paid_potential_max
+      p paid_potential: paid_potential, allowed: paid_potential_max
       print "You've already calculated to pay out #{paid}, sure you want to continue? "
-      ans  = $stdin.gets.chomp
+
+      ans = $stdin.gets
       if ans =~ /^y/i
         puts "Your call, Santa"
       else
@@ -72,10 +75,14 @@ def pay(nmc, payout = 49.0)
         exit
       end
     end
+
     [user, payment, percentage]
   end
+
   # ask questions
-  pp payouts
+  payouts.each do |data|
+    puts "%40s | %11.8f (%11.8f%%)" % data
+  end
 
   print "Does this look kosher? "
   ans  = $stdin.gets.chomp
@@ -90,8 +97,8 @@ def pay(nmc, payout = 49.0)
     user, amount, percentage = payment
     if pay_nmc user, amount
       paid += amount
-      puts "PAID #{user} #{amount}"
-      NMC::Payout.create(:username => user, :amount => amount, :found_block => nmc[:id], :percentage => percentage)
+      puts "PAID #{user} #{amount} (#{"%11.8f" % percentage})"
+      NMC::Payout.create(:username => user, :amount => amount, :found_block => nmc[:id], :percentage => percentage.to_f)
     end
   end
   nmc.update(:paid => true, :pay_stop_stamp => Time.now)
@@ -107,7 +114,7 @@ if $0 == __FILE__
   puts
 
   if answer.to_s.match /^[Yy]/
-    puts "Ok, paying out"
+    puts "Ok, paying out #{ENV["PAYOUT"]}"
   else
     warn "Ok, backing out, Cap'n!"
     exit
@@ -115,6 +122,6 @@ if $0 == __FILE__
   unpaids.each do |nmc|
     puts "Paying for block on share ##{nmc}"
     nmc.update(:pay_start_stamp => Time.now)
-    pay nmc
+    pay nmc, ENV["PAYOUT"].to_f
   end
 end

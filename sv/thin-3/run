@@ -1,0 +1,9 @@
+#!/bin/sh
+base_port=$(<env/BASE_PORT)
+my_port=$(basename $PWD|awk -F"-" '{print $(NF)}')
+root=$(<env/ROOT)
+echo Starting app in $root on port ${base_port}${my_port}
+cd $root
+. ~/.rvm/scripts/rvm
+. ./.rvmrc
+exec thin -R config.ru start -p ${base_port}${my_port} 2>&1
