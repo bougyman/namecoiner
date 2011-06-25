@@ -1,7 +1,33 @@
 (function() {
-  var graphFound, graphShares24h;
-  graphShares24h = function() {
-    var alreadyFetched, data, graph, onDataReceived, options;
+  var graph, graphFound, graphShares, graphStales;
+  graph = function(div, urls, options) {
+    var alreadyFetched, data, onDataReceived, url, _i, _len, _results;
+    data = [];
+    $.plot(div, data, options);
+    alreadyFetched = {};
+    onDataReceived = function(series) {
+      var firstcoordinate;
+      firstcoordinate = '(' + series.data[0][0] + ', ' + series.data[0][1] + ')';
+      if (!alreadyFetched[series.label]) {
+        alreadyFetched[series.label] = true;
+        data.push(series);
+      }
+      return $.plot(div, data, options);
+    };
+    _results = [];
+    for (_i = 0, _len = urls.length; _i < _len; _i++) {
+      url = urls[_i];
+      _results.push($.ajax({
+        url: url,
+        method: 'GET',
+        dataType: 'json',
+        success: onDataReceived
+      }));
+    }
+    return _results;
+  };
+  graphShares = function() {
+    var options, urls;
     options = {
       lines: {
         fill: true,
@@ -12,36 +38,31 @@
         ticksize: [1, "hour"]
       }
     };
-    data = [];
-    graph = $("#graph-shares");
-    $.plot(graph, data, options);
-    alreadyFetched = {};
-    onDataReceived = function(series) {
-      var firstcoordinate;
-      firstcoordinate = '(' + series.data[0][0] + ', ' + series.data[0][1] + ')';
-      if (!alreadyFetched[series.label]) {
-        alreadyFetched[series.label] = true;
-        data.push(series);
+    urls = ["/graph/last_24h.json?label=Stale&r=stale", "/graph/last_24h.json?label=Valid&o=true"];
+    return graph($("#graph-shares"), urls, options);
+  };
+  graphStales = function() {
+    var options, urls;
+    options = {
+      lines: {
+        fill: true,
+        show: true
+      },
+      xaxis: {
+        mode: "time",
+        ticksize: [1, "hour"]
       }
-      return $.plot(graph, data, options);
     };
-    $.ajax({
-      url: "/graph/last_24h.json?label=Stale&r=stale",
-      method: 'GET',
-      dataType: 'json',
-      success: onDataReceived
-    });
-    return $.ajax({
-      url: "/graph/last_24h.json?label=Valid&o=true",
-      method: 'GET',
-      dataType: 'json',
-      success: onDataReceived
-    });
+    urls = ["/graph/last_24h.json?label=Stale&r=stale"];
+    return graph($("#graph-stales"), urls, options);
   };
   graphFound = function() {
-    var alreadyFetched, data, graph, onDataReceived, options;
+    var options, urls;
     options = {
-      bars: {
+      lines: {
+        show: true
+      },
+      points: {
         show: true
       },
       xaxis: {
@@ -53,28 +74,12 @@
         tickSize: 1
       }
     };
-    data = [];
-    graph = $("#graph-found");
-    $.plot(graph, data, options);
-    alreadyFetched = {};
-    onDataReceived = function(series) {
-      var firstcoordinate;
-      firstcoordinate = '(' + series.data[0][0] + ', ' + series.data[0][1] + ')';
-      if (!alreadyFetched[series.label]) {
-        alreadyFetched[series.label] = true;
-        data.push(series);
-      }
-      return $.plot(graph, data, options);
-    };
-    return $.ajax({
-      url: "/graph/last_7d.json?label=Found&u=true&o=true",
-      method: 'GET',
-      dataType: 'json',
-      success: onDataReceived
-    });
+    urls = ["/graph/last_7d.json?label=Found&u=true&o=true"];
+    return graph($("#graph-found"), urls, options);
   };
   $(function() {
-    graphShares24h();
+    graphShares();
+    graphStales();
     return graphFound();
   });
 }).call(this);

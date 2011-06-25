@@ -1,4 +1,46 @@
 module Namecoiner
+  class NamecoindCli
+    def initialize
+      @cache = Dalli::Client.new
+    end
+
+    def transactions
+      cache('namecoind_stats'){
+        JSON.parse(`~/bin/namecoind listtransactions "" 10000`)
+      }
+    end
+
+    def block_count
+      cache('namecoind_getblockcount'){
+        `~/bin/namecoind getblockcount`.to_i
+      }
+    end
+
+    def difficulty
+      cache('namecoind_getdifficulty'){
+        `~/bin/namecoind getdifficulty`.to_f
+      }
+    end
+
+    def cache(name, ttl = 10 * 60)
+      if got = @cache.get(name)
+        got
+      elsif got = @cache.get(name + ".longterm")
+        Thread.new{
+          @cache.set(name, value = yield, ttl)
+          @cache.set(name + ".longterm", value, ttl * 2)
+        }
+        got
+      else
+        @cache.set(name, value = yield, ttl)
+        @cache.set(name + ".longterm", value, ttl * 2)
+        value
+      end
+    end
+  end
+
+  NAMECOIN_CLIENT = NamecoindCli.new
+
   class Main < Ramaze::Controller
     map '/'
     layout(:main){ !request.xhr? }
@@ -23,7 +65,7 @@ module Namecoiner
     end
 
     def statistics
-      @stats = JSON.parse(`~/bin/namecoind listtransactions "" 10000`)
+      @stats = NAMECOIN_CLIENT.transactions
       @stats.reject!{|stat|
         stat['amount'] < 49 || stat['amount'] > 51
       }
@@ -31,22 +73,24 @@ module Namecoiner
     end
 
     def live_data
-      hashrate = Shares.hash_per_second
-      blocks_found = Shares.blocks_found
-      current_shares = NMC::Shares.current_shares
-      current_share_count = current_shares.inject(0) { |total,share| share[:good] + total }
-      current_user_count = current_shares.count
-      hashes_per_user = hashrate/current_user_count.to_f
-      blocks_total = `~/bin/namecoind getblockcount`.to_i
-      difficulty = `~/bin/namecoind getdifficulty`.to_f
+      NAMECOIN_CLIENT.cache('live_data.json', 10){
+        hashrate = Shares.hash_per_second
+        blocks_found = Shares.blocks_found
+        current_shares = NMC::Shares.current_shares
+        current_share_count = current_shares.inject(0) { |total,share| share[:good] + total }
+        current_user_count = current_shares.count
+        hashes_per_user = hashrate/current_user_count.to_f
+        blocks_total = NAMECOIN_CLIENT.block_count
+        difficulty = NAMECOIN_CLIENT.difficulty
 
-      { hashrate: hashrate_format(hashrate),
-        blocks_found: blocks_found,
-        blocks_total: blocks_total,
-        difficulty: "%.2f" % difficulty,
-        current_share_count: current_share_count,
-        current_user_count: current_user_count,
-        hashes_per_user: hashrate_format(hashes_per_user),
+        { hashrate: hashrate_format(hashrate),
+          blocks_found: blocks_found,
+          blocks_total: blocks_total,
+          difficulty: "%.2f" % difficulty,
+          current_share_count: current_share_count,
+          current_user_count: current_user_count,
+          hashes_per_user: hashrate_format(hashes_per_user),
+        }
       }
     end
 

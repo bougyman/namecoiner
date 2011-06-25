@@ -1,3 +1,4 @@
 #!/bin/sh
 cd ~
-exec ./sbin/pushpoold 2>&1
+ulimit -n 65535
+exec ./sbin/pushpoold -F -E -D2 2>&1

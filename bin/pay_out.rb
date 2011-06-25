@@ -3,12 +3,25 @@ require 'pp'
 
 
 def validate_address(address)
+  if EXCLUDE_PAYEES.include?(address)
+    puts "Not paying #{address}, you put it in EXCLUDE_PAYEES"
+    return nil
+  end
   cmd = "namecoind validateaddress #{address}"
   res = JSON.parse(%x{#{cmd}})
   res["isvalid"]
 rescue => e
   warn e
   nil
+end
+
+def validate_namecoind # Make sure namecoind is in path
+  cmd = "namecoind getinfo"
+  %x{#{cmd}}
+  if $? != 0
+    warn "namecoind test failed, make sure it is in your PATH"
+    exit 127
+  end
 end
 
 def pay_nmc(account, amount)
@@ -106,8 +119,15 @@ def pay(nmc, payout = 49.0)
 end
 
 if $0 == __FILE__
-  unpaids = NMC::Shares.unpaid_winning_shares.order(:created_at.asc)
+  validate_namecoind # make sure namecoind is available before we care about the rest
+  if ENV["EXCLUDE_PAYEES"]
+    EXCLUDE_PAYEES=ENV["EXCLUDE_PAYEES"].split(":")
+    warn "Excluding addresses #{EXCLUDE_PAYEES} from payout!"
+  else
+    EXCLUDE_PAYEES=[]
+  end
 
+  unpaids = NMC::Shares.unpaid_winning_shares.order(:created_at.asc)
   print "There appear to be #{unpaids.count} unpaid blocks, this seem right? "
 
   answer = $stdin.gets.chomp
@@ -119,7 +139,18 @@ if $0 == __FILE__
     warn "Ok, backing out, Cap'n!"
     exit
   end
+
   unpaids.each do |nmc|
+    nmc_balance = `~/bin/namecoind getbalance`.to_f
+    puts "Our balance is #{nmc_balance}"
+
+    if nmc_balance < 50
+      puts "Not enough funds to pay another block"
+      exit
+    end
+
+    puts "just in case"
+    gets
     puts "Paying for block on share ##{nmc}"
     nmc.update(:pay_start_stamp => Time.now)
     pay nmc, ENV["PAYOUT"].to_f

@@ -1,15 +1,5 @@
 ﻿@charset "UTF-8";
-/*------------------------------------*\
-	INUIT.CSS
-\*------------------------------------*/
 /*
-Author:             Harry Roberts
-Twitter:            @inuitcss
-Author URL:         csswizardry.com
-Project URL:        inuitcss.com
-Version:            2.0
-Date:               11 June 2011
-
 Copyright 2011 Harry Roberts
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,16 +13,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
 */
 
-
-
-
-
-/*------------------------------------*\
-	RESET
-\*------------------------------------*/
 html,body,div,span,applet,object,iframe,
 h1,h2,h3,h4,h5,h6,p,blockquote,pre,
 a,abbr,acronym,address,big,cite,code,
@@ -78,13 +60,6 @@ abbr,acronym{
 	border:0;
 }
 
-
-
-
-
-/*------------------------------------*\
-	MAIN
-\*------------------------------------*/
 html{
 	overflow-y:scroll; /* Force scrollbars 100% of the time */
 	font-size:100%; /* Use 16px as per http://www.informationarchitects.jp/en/100e2r/ and http://www.wilsonminer.com/posts/2008/oct/20/relative-readability/ */
@@ -102,17 +77,6 @@ body{
 	background:url(../img/css/grid.png) top center repeat-y;
 }
 
-
-
-
-
-/*------------------------------------*\
-	GRIDS
-\*------------------------------------*/
-/*
-Most frameworks rely on class="end" or similar to remove the margin from the last column in a row of grids. We don’t want to do that so we use a combination of margin- and negative margin-left. It’s clever...
-We also allow you to use grid items as stand alone columns or in a series of columns. To use a series just wrap them all in <div class="grids">...</div>
-*/
 .grids{
 	margin-left:-20px;
 	clear:both;
@@ -132,35 +96,10 @@ ul.grids{
 	margin:0 0 0 20px;
 }
 
-/*--- CLEARFIX ---*/
-/*
-Fix clearing issues as per: http://nicolasgallagher.com/micro-clearfix-hack/
-*/
-.cf,
-.grids{
-	zoom:1;
-}
-.cf:before,
-.grids:before,
-.cf:after,
-.grids:after{
-	content:"";
-	display:table;
-}
-.cf:after,
-.grids:after{
-	clear:both;
-}
+.cf, .grids{ zoom:1; }
+.cf:before, .grids:before, .cf:after, .grids:after { content:""; display:table; }
+.cf:after, .grids:after { clear:both; }
 
-/*
-Grid sizes based on 960.gs by @nathansmith
-For the sake of file-size and load-time please delete all CSS pertaining to the grid system you aren’t using.
-The ability to use one of two different grid systems from the same file means there is a lot of code needed to alter intricate styles--look out for lists!
-*/
-
-/*
-16 column grid system -- default
-*/
 .grid-1		{ width:40px; }
 .grid-2		{ width:100px; }
 .grid-3		{ width:160px; }
@@ -180,57 +119,6 @@ The ability to use one of two different grid systems from the same file means th
 .grid-14	{ width:820px; }
 .grid-15	{ width:880px; }
 .grid-16	{ width:940px; margin:0; }
-
-
-
-
-
-/*------------------------------------*\
-	LOGO
-\*------------------------------------*/
-/*
-Your logo is an image, not a h1: http://csswizardry.com/2010/10/your-logo-is-an-image-not-a-h1/
-*/
-#logo,
-#logo img{
-	display:block;
-	width:auto; /* Width of your logo in pixels (ideally a round grid-number) */
-	height:auto; /* Height of your logo in pixels */
-}
-/* Based on the fact that we need to use an <img /> in our markup, let’s hide the actual image and use a background on the <a>--this gives us sematically sound markup and the ability to use sprites for hover effects! */
-#logo{
-	background:url(/path/to/logo);
-}
-#logo:hover{
-	/* Hover states */
-	background-position:0 -00px;
-}
-#logo img{
-	position:absolute;
-	left:-99999px;
-}
-
-
-
-
-
-/*------------------------------------*\
-	NAV
-\*------------------------------------*/
-nav ul{
-	list-style:none;
-	width:100%;
-	overflow:hidden;
-	margin:0 0 1.5em 0;
-}
-nav li{
-	float:left;
-}
-nav a{
-	display:block;
-}
-
-
 
 
 

@@ -1,6 +1,3 @@
-/*------------------------------------*\
-	MAIN
-\*------------------------------------*/
 html{
 	font-family:"Droid Sans", sans-serif;
 	color:#8ad1d8;
@@ -50,16 +47,6 @@ footer {
   background: #008209;
 }
 
-nav a {
-  color: #fff;
-  border: 1px solid #333;
-  padding: 0.5em 1em;
-}
-
-
-/*------------------------------------*\
-	TYPE
-\*------------------------------------*/
 h1{
   color: #34cfbe;
 	font-size:3em;
@@ -79,64 +66,28 @@ code {
   font-family: "Droid Sans Mono", monospace;
 }
 
-/* centered nav */
-nav.centred,
-nav.centered{
-	text-align:center;
-}
-nav.centred li,
-nav.centered li{
-	display:inline;
-	float:none;
-}
-nav.centred a,
-nav.centered a{
-	display:inline-block;
+nav {
+  text-align: center;
 }
 
-
-/* IMAGES */
-#logo{
-	margin-bottom:1.5em;
+nav ul{
+	list-style:none;
+	width:100%;
+	overflow:hidden;
+	margin:0 0 1.5em 0;
 }
 
+nav li{
+	display: inline;
+  float: none;
+}
 
-
-
-
-/*------------------------------------*\
-	NARROW
-\*------------------------------------*/
-/*
-CSS for tablets and narrower devices
-*/
-
-
-
-
+nav a {
+  color: #fff;
+  border: 1px solid #333;
+  padding: 0.5em 1em;
+  display: inline-block;
+}
 
 @media (min-width: 721px) and (max-width: 960px){}
-/*--- END NARROW ---*/
-
-
-
-
-
-/*------------------------------------*\
-	MOBILE
-\*------------------------------------*/
-/*
-CSS for mobile devices.
-Linearise it!
-*/
-
-
-
-
-
-@media (max-width: 720px){
-body{
-	font-size:0.75em;
-}
-}
-/*--- END MOBILE ---*/
+@media (max-width: 720px){ body{ font-size:0.75em; } }

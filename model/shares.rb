@@ -1,5 +1,6 @@
 require_relative "../lib/namecoiner"
 require_relative "../lib/namecoiner/block_header"
+require 'dalli'
 require 'sequel'
 require 'json'
 
@@ -19,6 +20,8 @@ module Namecoiner
   class Shares < Sequel::Model
     set_dataset :shares # for better reloading
     one_to_many :payout, :key => :found_block
+
+    plugin :caching, Dalli::Client.new, ttl: 10
 
     def self.hash_per_second
       DB["SELECT COUNT(*) * POW(2,32) / 600 as hash FROM shares WHERE created_at+'600 seconds'::text::interval > NOW() AND our_result = 'Y'"].first[:hash]
