@@ -7,7 +7,7 @@ require 'json'
 module Namecoiner
   config = JSON.load(File.read(File.expand_path('~/server.json')))
   dbc = config['database']
-  adapter_map = {'postgresql' => 'postgres'}
+  adapter_map = {'postgresql' => 'postgres', 'mysql' => 'mysql'}
 
   DB = Sequel.connect(
     adapter: adapter_map.fetch(dbc.fetch('engine')),
