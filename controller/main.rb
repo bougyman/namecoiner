@@ -58,10 +58,13 @@ module Namecoiner
 
     def details(username = nil)
       @username = (username || request[:username]).to_s.strip
+      Ramaze::Log.debug "Details for: #{@username}"
       session[:username] = @username
 
       details_current(@username)
       @history = Payout.filter(username: @username).order(:paid_at.desc)
+      @total_loot = @history.all.inject(BigDecimal("0")) { |a,b| a + b[:amount] }
+      Ramaze::Log.debug "Total Loot: #{@total_loot}"
     end
 
     def statistics
@@ -98,6 +101,7 @@ module Namecoiner
 
     def details_current(username)
       # | Time started | Shares | Stales | Payout |
+      @user_ghash_per_sec = hashrate_format(Shares.ghash_per_sec_for(username))
       @current_start_time = Shares.last_block_time
       @current_user_shares = Shares.current_shares_by_username(username).first
       if @current_user_shares

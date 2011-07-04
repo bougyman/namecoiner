@@ -23,6 +23,10 @@ module Namecoiner
 
     plugin :caching, Dalli::Client.new, ttl: 10
 
+    def self.ghash_per_sec_for(username)
+      DB["SELECT COUNT(*) * POW(2,32) / 600 as hash FROM shares WHERE created_at+'600 seconds'::text::interval > NOW() AND our_result = 'Y' and username = '#{username}'"].first[:hash]
+    end
+
     def self.hash_per_second
       DB["SELECT COUNT(*) * POW(2,32) / 600 as hash FROM shares WHERE created_at+'600 seconds'::text::interval > NOW() AND our_result = 'Y'"].first[:hash]
     end

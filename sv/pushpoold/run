@@ -1,4 +1,5 @@
 #!/bin/sh
 cd ~
 ulimit -n 65535
+ulimit -n > /tmp/ulimit.$$.$(date +%s)
 exec ./sbin/pushpoold -F -E -D2 2>&1

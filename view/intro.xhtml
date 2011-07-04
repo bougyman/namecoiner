@@ -11,7 +11,7 @@
     More details can be found at <a href="https://en.bitcoin.it/wiki/Accounts_explained">the bitcoin wiki</a>
   </p>
   <p>
-    The pool runs at <a href="http://namebit.org">pool.namebit.org:9098</a>
+    The pool runs at <a href="http://namebit.org">pool.namebit.org:10000</a>
   </p>
 </div>
 <div class="section grid grid-8">
@@ -31,23 +31,34 @@
 </div>
 <div class="section grid grid-16">
   <h2>Miner setup</h2>
+  <p>
+    Please see the documentation for each miner for more information on their
+    flags, all instructions here are submitted by our users and won't
+    neccesarily reflect the options best for your machine.
+  </p>
+
   <p class="miner">
     <a href="https://en.bitcoin.it/wiki/Poclbm">PyOpenCL bitcoin miner with a GUI frontend</a>
-    <code>poclbm.py --user addr --pass none --host pool.namebit.org --port 9098</code>
+    <code>poclbm.py --user addr --pass none --host pool.namebit.org --port 10000</code>
   </p>
 
   <p class="miner">
     <a href="https://en.bitcoin.it/wiki/OpenCL_miner">OpenCL/CUDA GPU miner</a>
-    <code>rpcminer-opencl.exe -url=http://pool.namebit.org:9098 -user=addr -password=none</code>
+    <code>rpcminer-opencl.exe -url=http://pool.namebit.org:10000 -user=addr -password=none</code>
   </p>
 
   <p class="miner">
     <a href="https://en.bitcoin.it/wiki/Phoenix_miner">Phoenix Miner</a>
-    <code>phoenix.exe -u http://addr:none@pool.namebit.org:9098/ -k poclbm VECTORS BFI_INT AGGRESSION=10 WORKSIZE=128 DEVICE=0 FASTLOOP=false</code>
+    <code>phoenix.exe -u http://addr:none@pool.namebit.org:10000/ -k poclbm VECTORS BFI_INT AGGRESSION=10 WORKSIZE=128 DEVICE=0 FASTLOOP=false</code>
   </p>
 
   <p class="miner">
     <a href="https://en.bitcoin.it/wiki/Cpu_Miner">CPU Miner</a>
-    <code>minerd --userpass addr:none --url http://pool.namebit.org:9098</code>
+    <code>minerd --userpass addr:none --url http://pool.namebit.org:10000</code>
+  </p>
+
+  <p class="miner">
+    <a href="http://ufasoft.com/open/bitcoin">Ufasoft Miner</a>
+    <code>bitcoin-miner.exe -o http://pool.namebit.org:10000 -p none -u addr</code>
   </p>
 </div>

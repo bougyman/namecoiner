@@ -115,7 +115,7 @@ def pay(nmc, payout = 49.0)
     end
   end
   nmc.update(:paid => true, :pay_stop_stamp => Time.now)
-  puts "Paid #{paid} nmc of #{payout}, leaving #{50-paid} profit"
+  puts "Paid #{paid} nmc of #{payout}, leaving #{payout-paid} profit"
 end
 
 if $0 == __FILE__
@@ -141,15 +141,15 @@ if $0 == __FILE__
   end
 
   unpaids.each do |nmc|
-    nmc_balance = `~/bin/namecoind getbalance`.to_f
+    nmc_balance = `~/bin/namecoind getbalance ""`.to_f
     puts "Our balance is #{nmc_balance}"
 
-    if nmc_balance < 50
+    if nmc_balance < payout
       puts "Not enough funds to pay another block"
       exit
     end
 
-    puts "just in case"
+    puts "just in case, hit enter to continue -> Point of No Return, here."
     gets
     puts "Paying for block on share ##{nmc}"
     nmc.update(:pay_start_stamp => Time.now)
