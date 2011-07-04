@@ -115,7 +115,7 @@ def pay(nmc, payout = 49.0)
     end
   end
   nmc.update(:paid => true, :pay_stop_stamp => Time.now)
-  puts "Paid #{paid} nmc of #{payout}, leaving #{payout-paid} profit"
+  puts "Paid #{paid} nmc of #{payout}, leaving #{payout-paid} in unpaid shares"
 end
 
 if $0 == __FILE__
@@ -140,6 +140,7 @@ if $0 == __FILE__
     exit
   end
 
+  payout = ENV["PAYOUT"].to_f
   unpaids.each do |nmc|
     nmc_balance = `~/bin/namecoind getbalance ""`.to_f
     puts "Our balance is #{nmc_balance}"
@@ -153,6 +154,6 @@ if $0 == __FILE__
     gets
     puts "Paying for block on share ##{nmc}"
     nmc.update(:pay_start_stamp => Time.now)
-    pay nmc, ENV["PAYOUT"].to_f
+    pay nmc, payout
   end
 end
