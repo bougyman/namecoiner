@@ -23,6 +23,16 @@ module Namecoiner
 
     plugin :caching, Dalli::Client.new, ttl: 10
 
+    def self.average_time_per_round
+      all = won_shares.order(:created_at.asc).all
+      Rational((all.last.created_at - all.first.created_at)/all.size,60).divmod(60)
+    end
+
+    def self.average_shares_per_round
+      won = won_shares.count
+      count / won
+    end
+
     def self.ghash_per_sec_for(username)
       DB["SELECT COUNT(*) * POW(2,32) / 600 as hash FROM shares WHERE created_at+'600 seconds'::text::interval > NOW() AND our_result = 'Y' and username = '#{username}'"].first[:hash]
     end
@@ -83,7 +93,7 @@ module Namecoiner
 
     def self.last_won_share(share=nil)
       if share
-       won_shares.filter(["created_at < ?",share[:created_at]]).order(:created_at.desc).limit(1).first
+       won_shares.filter(["id < ?",share[:id]]).order(:created_at.desc).limit(1).first
       else
         won_shares.order(:created_at.asc).last
       end
