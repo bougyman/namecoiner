@@ -38,8 +38,17 @@
     </div>
 
     <footer class="grids">
+      <?r if @uptime ?>
+        <div id="server_status" class="grid grid-16">#{@uptime}</div>
+      <?r end ?>
       <div id="copyright" class="grid grid-16">&copy; 2011 by <a href="http://rubyists.bit">The Rubyists, LLC.</a></div>
       <div id="contact_us" class="grid grid-16">Find us at #namebit on <a href="http://freenode.net" title="Freenode IRC">Freenode</a> or email webmaster at namebit dot org</div>
+      <?r if action.name == "main" ?>
+        <div id="fb-root">
+          <script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
+          <fb:like-box href="http://www.facebook.com/pages/NameBit/200430230005194" width="292" colorscheme="light" show_faces="false" border_color="" stream="false" header="false"></fb:like-box>
+        </div>
+      <?r end ?>
     </footer>
   </body>
 </html>

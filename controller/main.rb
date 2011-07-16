@@ -50,8 +50,7 @@ module Namecoiner
       live_data.each do |key, value|
         instance_variable_set("@#{key}", value)
       end
-      @average_time_per_round = "%02d:%02d" % NMC::Shares.average_time_per_round
-      @average_shares_per_round = NMC::Shares.average_shares_per_round
+      @uptime = %x{uptime}
     end
 
     def my_account
@@ -70,6 +69,16 @@ module Namecoiner
     end
 
     def statistics
+      last_block = NMC::Shares.last_won_share
+      last_block_found = last_block.created_at.utc
+      previous_block = NMC::Shares.last_won_share(last_block)
+      previous_block_found = previous_block.created_at.utc
+      @current_round_duration = "%02d:%02d" % Rational(Time.now.utc - last_block_found,60).divmod(60)
+      @previous_round_duration = "%02d:%02d" % Rational(last_block_found - previous_block_found,60).divmod(60)
+      @total_shares = NMC::Shares.count
+      @average_time_per_round = "%02d:%02d" % NMC::Shares.average_time_per_round
+      @average_shares_per_round = NMC::Shares.average_shares_per_round
+
       @stats = NAMECOIN_CLIENT.transactions
       @stats.reject!{|stat|
         stat['amount'] < 49 || stat['amount'] > 51
@@ -81,16 +90,7 @@ module Namecoiner
       NAMECOIN_CLIENT.cache('live_data.json', 10){
         hashrate = Shares.hash_per_second
         blocks_found = Shares.blocks_found
-        last_block = NMC::Shares.last_won_share
-        last_block_found = last_block.created_at.utc
-        previous_block = NMC::Shares.last_won_share(last_block)
-        previous_block_found = previous_block.created_at.utc
-        current_round_duration = Rational(Time.now.utc - last_block_found,60).divmod(60)
-        previous_round_duration = Rational(last_block_found - previous_block_found,60).divmod(60)
-        average_time_per_round = NMC::Shares.average_time_per_round
-        average_shares_per_round = NMC::Shares.average_shares_per_round
-        total_shares = NMC::Shares.count
-
+        
         current_shares = NMC::Shares.current_shares
         current_share_count = current_shares.inject(0) { |total,share| share[:good] + total }
         current_user_count = current_shares.count
@@ -100,10 +100,7 @@ module Namecoiner
 
         { hashrate: hashrate_format(hashrate),
           blocks_found: blocks_found,
-          previous_round_duration: "%02d:%02d" % previous_round_duration,
-          current_round_duration: "%02d:%02d" % current_round_duration,
           blocks_total: blocks_total,
-          total_shares: total_shares,
           difficulty: "%.2f" % difficulty,
           current_share_count: current_share_count,
           current_user_count: current_user_count,
