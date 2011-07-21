@@ -1,0 +1,8 @@
+#!/bin/sh
+base_port=$(<env/BASE_PORT)
+my_port=$(basename $PWD|awk -F"-" '{print $(NF)}')
+root=$(<env/ROOT)
+. ~/.rvm/scripts/rvm
+cd $root
+echo Starting app in $root on port ${base_port}${my_port}
+exec rackup --server fastcgi config.ru -o 127.0.0.1 -p ${base_port}${my_port} 2>&1

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+source /home/namecoin/.rvm/scripts/rvm
+
+cd /home/namecoin/g/namecoiner
+exec bin/update_memcached 2>&1
