@@ -1,49 +1,69 @@
-require_relative "../model/payout"
 require 'pp'
+require_relative '../../namecoin_client/lib/namecoin_client'
+require_relative "../model/payout"
 
+NMCC = NamecoinClient.new
 
 def validate_address(address)
   if EXCLUDE_PAYEES.include?(address)
     puts "Not paying #{address}, you put it in EXCLUDE_PAYEES"
     return nil
   end
-  cmd = "namecoind validateaddress #{address}"
-  res = JSON.parse(%x{#{cmd}})
-  res["isvalid"]
+
+  valid = NMCC.validateaddress(address)
+  valid['isvalid'] && !valid['ismine']
 rescue => e
   warn e
   nil
 end
 
-def validate_namecoind # Make sure namecoind is in path
-  cmd = "namecoind getinfo"
-  %x{#{cmd}}
-  if $? != 0
-    warn "namecoind test failed, make sure it is in your PATH"
-    exit 127
+# Make sure namecoind is running
+def validate_namecoind(wanted_version = 32190)
+  version = NMCC.getinfo['version']
+
+  if version == wanted_version
+    true
+  else
+    warn "namecoind version is #{version}, but we usually work with version #{wanted_version}"
   end
+rescue => ex
+  warn "validate_namecoind failed: #{ex}"
+  exit
 end
 
 def pay_nmc(account, amount)
-  if validate_address(account)
-    puts "Sending #{amount} to #{account}"
-    cmd = "namecoind sendfrom \"\" #{account} #{amount}"
-    p cmd
-    output = %x{#{cmd}}
-    res = $?
-    if res != 0
-      print "Payment Unsuccessful #{output}, wanna stop? "
-      answer = $stdin.gets.chomp
-      if answer.match /^[Yy]/
-        puts "Ok, stopping"
-        exit
-      end
-      return false
-    end
-  else
+  if amount <= 0.1e-8 # less than 8 significant digits, namecoind will reject.
+    puts "Won't pay #{amount} to #{account}, it's too close to 0"
+    return false
+  end
+
+  unless validate_address(account)
     puts "#{account} didn't validate, not sending"
     return false
   end
+
+  puts "Sending #{amount} to #{account}"
+
+  begin
+    result = NMCC.sendfrom('', account, amount)
+    p result
+  rescue => ex
+    if ex.respond_to?(:response)
+      body = JSON.parse(ex.response.body)
+      warn body.inspect
+    else
+      puts ex, *ex.backtrace
+      print "payment unsuccessful, wanna stop? "
+
+      if gets =~ /^y/i
+        puts "OK, stopping"
+        exit
+      end
+    end
+
+    return false
+  end
+
   true
 end
 
@@ -107,13 +127,38 @@ def pay(nmc, payout = 49.0)
   end
 
   payouts.each do |payment|
+    if paid > 50
+      puts "We've already paid #{paid}, you still wanna keep going?"
+      ans = $stdin.gets
+      if ans =~ /^y/i
+        puts "Your call, Santa"
+      else
+        puts "Good choice, see what's up"
+        exit
+      end
+    end
+
     user, amount, percentage = payment
+    unpaid_payouts = NMC::Payout.filter(username: user, sent: false)
+
+    if (unpaid_count = unpaid_payouts.count) > 0
+      amount += unpaid_payouts.inject(0){|s,v| s + v[:amount] }
+    end
+
+    #Short Circuit if amount is less than transaction fees, just create an unsent Payout
+    if amount < 0.01
+      NMC::Payout.create(username: user, amount: amount, found_block: nmc[:id], percentage: percentage.to_f, sent: false)
+      next
+    end
+
     if pay_nmc user, amount
       paid += amount
       puts "PAID #{user} #{amount} (#{"%11.8f" % percentage})"
-      NMC::Payout.create(:username => user, :amount => amount, :found_block => nmc[:id], :percentage => percentage.to_f)
+      NMC::Payout.create(username: user, amount: amount, found_block: nmc[:id], percentage: percentage.to_f, sent: true)
+      unpaid_payouts.update(sent: true) if unpaid_count > 0
     end
   end
+
   nmc.update(:paid => true, :pay_stop_stamp => Time.now)
   puts "Paid #{paid} nmc of #{payout}, leaving #{payout-paid} in unpaid shares"
 end
@@ -152,7 +197,7 @@ if $0 == __FILE__
 
     puts "just in case, hit enter to continue -> Point of No Return, here."
     gets
-    puts "Paying for block on share ##{nmc}"
+    puts "Paying for block on share ##{nmc.inspect}"
     nmc.update(:pay_start_stamp => Time.now)
     pay nmc, payout
   end
