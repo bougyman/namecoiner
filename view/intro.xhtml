@@ -1,4 +1,4 @@
-<div class="section grid grid-8">
+<div class="c g12">
   <h2>Get mining tools and start digging</h2>
   <p>
     To join this pool, all you need is a namecoin address where we can
@@ -14,7 +14,7 @@
     The pool runs at <a href="http://namebit.org">pool.namebit.org:10000</a>
   </p>
 </div>
-<div class="section grid grid-8">
+<div class="c g12">
   <h2>Rates</h2>
   <p>
     Our Numero Uno priority is protecting your namecoins (NMC). For that reason, we monitor every payout manually with full paranoia.  Payouts should appear within a few blocks of the found block.
@@ -29,7 +29,7 @@
     per generated block.
   </p>
 </div>
-<div class="section grid grid-16">
+<div class="c g12">
   <h2>Miner setup</h2>
   <p>
     Please see the documentation for each miner for more information on their
@@ -37,28 +37,30 @@
     neccesarily reflect the options best for your machine.
   </p>
 
-  <p class="miner">
-    <a href="https://en.bitcoin.it/wiki/Poclbm">PyOpenCL bitcoin miner with a GUI frontend</a>
-    <code>poclbm.py --user addr --pass none --host pool.namebit.org --port 10000</code>
-  </p>
+  <ul>
+    <li>
+      <a href="https://en.bitcoin.it/wiki/Poclbm">PyOpenCL bitcoin miner with a GUI frontend</a>
+      <code>poclbm.py --user addr --pass none --host pool.namebit.org --port 10000</code>
+    </li>
 
-  <p class="miner">
-    <a href="https://en.bitcoin.it/wiki/OpenCL_miner">OpenCL/CUDA GPU miner</a>
-    <code>rpcminer-opencl.exe -url=http://pool.namebit.org:10000 -user=addr -password=none</code>
-  </p>
+    <li>
+      <a href="https://en.bitcoin.it/wiki/OpenCL_miner">OpenCL/CUDA GPU miner</a>
+      <code>rpcminer-opencl.exe -url=http://pool.namebit.org:10000 -user=addr -password=none</code>
+    </li>
 
-  <p class="miner">
-    <a href="https://en.bitcoin.it/wiki/Phoenix_miner">Phoenix Miner</a>
-    <code>phoenix.exe -u http://addr:none@pool.namebit.org:10000/ -k poclbm VECTORS BFI_INT AGGRESSION=10 WORKSIZE=128 DEVICE=0 FASTLOOP=false</code>
-  </p>
+    <li>
+      <a href="https://en.bitcoin.it/wiki/Phoenix_miner">Phoenix Miner</a>
+      <code>phoenix.exe -u http://addr:none@pool.namebit.org:10000/ -k poclbm VECTORS BFI_INT AGGRESSION=10 WORKSIZE=128 DEVICE=0 FASTLOOP=false</code>
+    </li>
 
-  <p class="miner">
-    <a href="https://en.bitcoin.it/wiki/Cpu_Miner">CPU Miner</a>
-    <code>minerd --userpass addr:none --url http://pool.namebit.org:10000</code>
-  </p>
+    <li>
+      <a href="https://en.bitcoin.it/wiki/Cpu_Miner">CPU Miner</a>
+      <code>minerd --userpass addr:none --url http://pool.namebit.org:10000</code>
+    </li>
 
-  <p class="miner">
-    <a href="http://ufasoft.com/open/bitcoin">Ufasoft Miner</a>
-    <code>bitcoin-miner.exe -o http://pool.namebit.org:10000 -p none -u addr</code>
-  </p>
+    <li>
+      <a href="http://ufasoft.com/open/bitcoin">Ufasoft Miner</a>
+      <code>bitcoin-miner.exe -o http://pool.namebit.org:10000 -p none -u addr</code>
+    </li>
+  </ul>
 </div>

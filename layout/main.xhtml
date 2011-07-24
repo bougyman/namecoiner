@@ -3,52 +3,52 @@
   <head>
     <title>NameBit</title>
     <meta encoding="UTF-8" />
-    <link rel="stylesheet" href="/css/inuit.css" />
-    <link rel="stylesheet" href="/css/style.css" />
     <link href='http://fonts.googleapis.com/css?family=VT323' rel='stylesheet' />
     <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css' />
     <link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link id="agtzfmNzc2ZpZGRsZXIMCxIEUGFnZRjR7woM" rel="stylesheet" type="text/css" href="http://www.webputty.net/css/agtzfmNzc2ZpZGRsZXIMCxIEUGFnZRjR7woM" />
+    <script type="text/javascript" src="http://www.webputty.net/js/agtzfmNzc2ZpZGRsZXIMCxIEUGFnZRjR7woM"></script>
+
+    <script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
     <script src="/js/flot/jquery.min.js"></script>
     <script src="/js/flot/jquery.flot.min.js"></script>
     <script src="/js/main_index.js"></script>
     <script src="/js/graphs.js"></script>
-    <link rel="shortcut icon" href="/favicon.ico" />
   </head>
   <body>
-    <header class="grids">
-      <a href="/"><h1 class="grid grid-4">NameBit</h1></a>
-      <div class="grid grid-2">
-        <img src="/img/goldfish.png">
+    <header class="r">
+      <div id="logo">
+        <h1 class="c g2"><a href="/">NameBit</a></h1>
+        <div class="c g2">
+          <img src="/img/goldfish.png">
+        </div>
       </div>
-      <div class="grid grid-16">
-        <nav>
-          <ul>
-            <li>#{Namecoiner::Main.a 'Home', :/}</li>
-            <li>#{Namecoiner::Main.a 'Get Started', :intro}</li>
-            <li>#{Namecoiner::Main.a 'My Account', :my_account}</li>
-            <li>#{Namecoiner::Main.a 'Statistics', :statistics}</li>
-            <li>#{Namecoiner::Graph.a 'Graphs', :/}</li>
-          </ul>
-        </nav>
-      </div>
+
+      <nav class="c g8">
+        <ul>
+          <li>#{Namecoiner::Main.a 'Home', :/}</li>
+          <li>#{Namecoiner::Main.a 'Get Started', :intro}</li>
+          <li>#{Namecoiner::Main.a 'My Account', :my_account}</li>
+          <li>#{Namecoiner::Main.a 'Statistics', :statistics}</li>
+          <li>#{Namecoiner::Graph.a 'Graphs', :/}</li>
+        </ul>
+      </nav>
     </header>
 
-    <div id="content" class="grids">
+    <div id="content" class="r">
       #{@content}
     </div>
 
-    <footer class="grids">
-      <?r if @uptime ?>
-        <div id="server_status" class="grid grid-16">#{@uptime}</div>
-      <?r end ?>
-      <div id="copyright" class="grid grid-16">&copy; 2011 by <a href="http://rubyists.bit">The Rubyists, LLC.</a></div>
-      <div id="contact_us" class="grid grid-16">Find us at #namebit on <a href="http://freenode.net" title="Freenode IRC">Freenode</a> or email webmaster at namebit dot org</div>
-      <?r if action.name == "main" ?>
-        <div id="fb-root">
-          <script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
-          <fb:like-box href="http://www.facebook.com/pages/NameBit/200430230005194" width="292" colorscheme="light" show_faces="false" border_color="" stream="false" header="false"></fb:like-box>
-        </div>
-      <?r end ?>
+    <footer class="r">
+      <div class="c g12" id="server_status">#{h `uptime`}</div>
+      <dl id="contact_us">
+        <dt class="c g2">IRC</dt>
+        <dd class="c g4">#namebit on <a href="http://freenode.net" title="Freenode IRC">Freenode</a></dd>
+        <dt class="c g2">Mail</dt>
+        <dd class="c g4">webmaster at namebit dot org</dd>
+      </dl>
+      <div class="c g12" id="copyright">&copy; 2011 by <a href="http://rubyists.bit">The Rubyists, LLC.</a></div>
     </footer>
   </body>
 </html>

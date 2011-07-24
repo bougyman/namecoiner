@@ -31,13 +31,14 @@
     </tr>
   </thead>
   <tbody>
-    <?r @stats.each do |stat| ?>
+    <?r @stats.reverse.each do |statistic| ?>
+      <?r next unless statistic['txid'] ?>
       <tr>
-        <td>#{h stat['category']}</td>
-        <td>#{h stat['amount']}</td>
-        <td>#{h stat['confirmations']}</td>
-        <td><a href="http://explorer.dot-bit.org?q=#{h stat['txid']}">#{h stat['txid'][0..10]}...</a></td>
-        <td>#{h Time.at(stat['time']).utc}</td>
+        <td>#{h statistic['category']}</td>
+        <td>#{h statistic['amount']}</td>
+        <td>#{h statistic['confirmations']}</td>
+        <td><a href="http://explorer.dot-bit.org?q=#{h statistic['txid']}">#{h statistic['txid'][0..10]}...</a></td>
+        <td>#{h Time.at(statistic['time']).utc}</td>
       </tr>
     <?r end ?>
   </tbody>

@@ -1,58 +1,56 @@
-<div id="details" class="grid grid-16">
-  <h2>Details for #{h @username}</h2>
+<h2 class="c g12">Details for #{h @username}</h2>
 
-  <div class="grid grid-7">
-    <h3>Speed (average, current hour)</h2>
-    #{h @user_ghash_per_sec}
-  </div>
-  <div class="grid grid-8">
-    <h3>Total Payout To Date</h2>
-    #{h "%.8f NMC" % @total_loot}
-  </div>
+<div class="c g6">
+  <h3>Speed (average, current hour)</h2>
+  #{h @user_ghash_per_sec}
+</div>
+<div class="c g6">
+  <h3>Total Payout To Date</h2>
+  #{h "%.8f NMC" % @total_loot}
+</div>
 
-  <div class="grid grid-16">
-    <h3>Estimation for current round</h3>
-    <table class="inuit">
-      <thead>
-        <tr>
-          <th>Time started</th>
-          <th>Shares</th>
-          <th>Stales</th>
-          <th>Expected Reward</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>#{h @current_start_time.utc}</td>
-          <td>#{h @current_user_good}</td>
-          <td>#{h @current_user_bad}</td>
-          <td>#{h "%.8f" % @current_user_pay}</td>
-        </tr>
-      </tbody>
-    </table>
+<div class="c g12">
+  <h3>Estimation for current round</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Time started</th>
+        <th>Shares</th>
+        <th>Stales</th>
+        <th>Expected Reward</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>#{h @current_start_time.utc}</td>
+        <td>#{h @current_user_good}</td>
+        <td>#{h @current_user_bad}</td>
+        <td>#{h "%.8f" % @current_user_pay}</td>
+      </tr>
+    </tbody>
+  </table>
 
-    <h3>Past Payments</h3>
-    <table class="inuit">
-      <thead>
-        <tr>
-          <th>Paid Date</th>
-          <th>Percentage of total shares</th>
-          <th>Shares</th>
-          <th>Stales</th>
-          <th>Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?r @history.each do |payment| ?>
-          <tr>
-            <td>#{h payment.paid_at.utc}</td>
-            <td>#{h "%.8f%%" % payment.percentage.to_f}</td>
-            <td>#{h payment.shares_of(@username).filter(reason: nil).count}</td>
-            <td>#{h payment.shares_of(@username).filter(reason: 'stale').count}</td>
-            <td>#{h "%.8f" % payment.amount.to_f}</td>
-          </tr>
-        <?r end ?>
-      </tbody>
-    </table>
-  </div>
+  <h3>Past Payments</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Paid Date</th>
+        <th>Percentage of total shares</th>
+        <th>Shares</th>
+        <th>Stales</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?r @history.each do |payment| ?>
+      <tr>
+        <td>#{h payment.paid_at.utc}</td>
+        <td>#{h "%.8f%%" % payment.percentage.to_f}</td>
+        <td>#{h payment.shares_of(@username).filter(reason: nil).count}</td>
+        <td>#{h payment.shares_of(@username).filter(reason: 'stale').count}</td>
+        <td>#{h "%.8f" % payment.amount.to_f}</td>
+      </tr>
+      <?r end ?>
+    </tbody>
+  </table>
 </div>

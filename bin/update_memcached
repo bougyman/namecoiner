@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+
+require 'pp'
+require 'dalli'
+require_relative '../../namecoin_client/lib/namecoin_client'
+require_relative '../model/shares'
+
+HASHRATE_FORMAT = [
+  ['%.2fTih/s', 1_000_000_000_000],
+  ['%.2fGih/s', 1_000_000_000],
+  ['%.2fMih/s', 1_000_000],
+  ['%.2fKih/s', 1_000],
+]
+
+def hashrate_format(hashrate)
+  HASHRATE_FORMAT.each do |format, size|
+    return format % (hashrate.to_f / size) if hashrate >= size
+  end
+
+  "%.2fh/s" % hashrate.to_f
+end
+
+NMCC = NamecoinClient.new
+CACHE = Dalli::Client.new
+
+loop do
+  transactions = NMCC.listtransactions('', 1000)
+  blockcount = NMCC.getblockcount
+  difficulty = NMCC.getdifficulty
+
+  hashrate = NMC::Shares.hash_per_second
+  blocks_found = NMC::Shares.blocks_found
+
+  current_shares = NMC::Shares.current_shares
+  current_share_count = current_shares.inject(0){|s, v| s + v[:good] }
+  current_user_count = current_shares.count
+  hashes_per_user = hashrate/current_user_count.to_f
+
+  live_data = {
+    hashrate: hashrate_format(hashrate),
+    blocks_found: blocks_found,
+    blocks_total: blockcount,
+    difficulty: "%.2f" % difficulty,
+    current_share_count: current_share_count,
+    current_user_count: current_user_count,
+    hashes_per_user: hashrate_format(hashes_per_user),
+  }
+
+  CACHE.set 'live_data', live_data
+  CACHE.set 'namecoind_transactions', transactions # bigger than 1mb, can't pull right now
+  pp CACHE.get('live_data')
+
+  sleep 5
+end
