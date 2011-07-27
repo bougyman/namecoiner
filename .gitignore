@@ -1,0 +1,8 @@
+public/googleafb8317364f74dc5.html
+.[A-z]*
+sv/*/log/current
+sv/*/log/supervise/
+sv/*/log/lock
+sv/*/log/@*
+sv/*/supervise/
+**examples/

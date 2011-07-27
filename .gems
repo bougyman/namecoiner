@@ -1,0 +1,5 @@
+pg -v 0.11.0
+sequel -v 3.24.1
+ramaze -v 2011.01.30
+addressable -v 2.2.6
+dalli -v1.0.5
