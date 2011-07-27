@@ -34,13 +34,15 @@
   <p>
     Please see the documentation for each miner for more information on their
     flags, all instructions here are submitted by our users and won't
-    neccesarily reflect the options best for your machine.
+    neccesarily reflect the options best for your machine.  'addr' should be replaced
+    with your namecoin address.  'none' means those four letters, not 'no password' or 
+    'any password'.
   </p>
 
   <ul>
     <li>
       <a href="https://en.bitcoin.it/wiki/Poclbm">PyOpenCL bitcoin miner with a GUI frontend</a>
-      <code>poclbm.py --user addr --pass none --host pool.namebit.org --port 10000</code>
+      <code>python2 ./poclbm.py http://addr:none@pool.namebit.org:10000  -v -f1 -w128 -d0</code>
     </li>
 
     <li>
@@ -50,7 +52,7 @@
 
     <li>
       <a href="https://en.bitcoin.it/wiki/Phoenix_miner">Phoenix Miner</a>
-      <code>phoenix.exe -u http://addr:none@pool.namebit.org:10000/ -k poclbm VECTORS BFI_INT AGGRESSION=10 WORKSIZE=128 DEVICE=0 FASTLOOP=false</code>
+      <code>phoenix.exe -u http://addr:none@pool.namebit.org:10000/;askrate=30 -k phatk VECTORS BFI_INT AGGRESSION=10 WORKSIZE=128 DEVICE=0</code>
     </li>
 
     <li>
