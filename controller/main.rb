@@ -28,21 +28,15 @@ module Namecoiner
     end
 
     def statistics
-      last_block = NMC::Shares.last_won_share
-      last_block_found = last_block.created_at.utc
-      previous_block = NMC::Shares.last_won_share(last_block)
-      previous_block_found = previous_block.created_at.utc
-      @current_round_duration = "%02d:%02d" % Rational(Time.now.utc - last_block_found,60).divmod(60)
-      @previous_round_duration = "%02d:%02d" % Rational(last_block_found - previous_block_found,60).divmod(60)
-      @total_shares = NMC::Shares.count
-      @average_time_per_round = "%02d:%02d" % NMC::Shares.average_time_per_round
-      @average_shares_per_round = NMC::Shares.average_shares_per_round
+      @last_block_found = NAMECOIN_CACHE.get('last_block_found')
+      @current_round_duration = NAMECOIN_CACHE.get('current_round_duration')
+      @previous_round_duration = NAMECOIN_CACHE.get('previous_round_duration')
+      @total_shares = NAMECOIN_CACHE.get('total_shares')
+      @average_time_per_round = NAMECOIN_CACHE.get('average_time_per_round')
+      @average_shares_per_round = NAMECOIN_CACHE.get('average_shares_per_round')
 
       @stats = NAMECOIN_CACHE.get('namecoind_transactions')
-      @stats.reject!{|stat|
-        stat['amount'] < 49 || stat['amount'] > 51
-      }
-      Ramaze::Log.warn @stats.pretty_inspect
+      @stats.reject!{|stat| stat['amount'] < 49 || stat['amount'] > 51 }
       @stats.compact.reverse!
     end
 
