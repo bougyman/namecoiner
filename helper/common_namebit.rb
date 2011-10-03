@@ -23,7 +23,7 @@ module Innate
           @current_user_pay = 0
         end
 
-        @history = Payout.filter(username: @username).order(:paid_at.desc)
+        @history = Namecoiner::Payout.filter(username: @username).order(:paid_at.desc)
         @total_loot = @history.all.inject(BigDecimal("0")){ |a,b| a + b[:amount] }
       end
 

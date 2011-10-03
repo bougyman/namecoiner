@@ -9,26 +9,32 @@ module Namecoiner
     end
 
     def details(username)
-      details_current(@username)
+      details_current(username)
+
+      history = @history.map do |payment|
+        shares = payment.shares_of(username)
+        {
+          paid_at_ISO2822: payment.paid_at.utc.iso2822,
+          percentage: payment.percentage.to_f,
+          shares: shares.filter(reason: nil).count,
+          stales: shares.filter(reason: 'stale').count,
+          amount: payment.amount.to_f
+        }
+      end
 
       result = {
         user: {
-          total_loot: @total_loot.to_f
+          name: username,
+          total_loot: @total_loot.to_f,
           current: {
             hash: @user_hash_per_sec,
             pretty_hash: @user_ghash_per_sec,
-            shares: @current_user_shares,
             good_shares: @current_user_good,
             bad_shares: @current_user_bad,
-            estimated_payment: @current_user_pay,
+            estimated_payment: @current_user_pay.to_f,
           },
-          history: @history.map{|h|
-            h.inspect
-          },
+          history: history,
         },
-        namebit: {
-          shares: @current_shares,
-        }
       }
     end
   end
